@@ -17,6 +17,7 @@ class ViewController: UIViewController {
     
 
     @IBOutlet weak var turnLabel: UILabel!
+    @IBOutlet weak var turnName: UILabel!
     
     @IBOutlet weak var a1: UIButton!
     @IBOutlet weak var a2: UIButton!
@@ -28,6 +29,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var c2: UIButton!
     @IBOutlet weak var c3: UIButton!
     
+    
     var firstTurn = Turn.Cross
     var currentTurn = Turn.Cross
     
@@ -37,6 +39,9 @@ class ViewController: UIViewController {
     var crossScore = 0
     var circleScore = 0
     
+    var recivingMessageX: String?
+    var recivingMessageO: String?
+    
     // Array of buttons
     var board = [UIButton]()
     
@@ -45,6 +50,9 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         initBoard()
+        
+        turnName.text = recivingMessageX
+        
         
         
         
@@ -127,9 +135,9 @@ class ViewController: UIViewController {
     // Handler
     func resultAlert(title: String) {
         
-        let message = "\nCircle " + String(circleScore) + "\n\nCrosses " + String(crossScore)
+        let message = "\n\(String(describing: recivingMessageO)) " + String(circleScore) + "\n\n\(String(describing: recivingMessageX)) " + String(crossScore)
         let ac = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
-        ac.addAction(UIAlertAction(title: "Reset", style: .default, handler: { (_) in self.resertBoard() }))
+        ac.addAction(UIAlertAction(title: "Reset", style: .default, handler: { (_) in self.resertBoard()}))
         self.present(ac,animated: true)
         
     }
@@ -178,11 +186,13 @@ class ViewController: UIViewController {
                 sender.setTitle(CIRCLE, for: .normal)
                 currentTurn = Turn.Cross
                 turnLabel.text = CROSS
+                turnName.text = recivingMessageX
             }
             else if currentTurn == Turn.Cross {
                 sender.setTitle(CROSS, for: .normal)
                 currentTurn = Turn.Circle
                 turnLabel.text = CIRCLE
+                turnName.text = recivingMessageO
             }
             // Remove animation when a button already has 0 or X in it
             sender.isEnabled = false
