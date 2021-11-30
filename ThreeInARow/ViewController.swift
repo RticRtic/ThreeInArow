@@ -75,14 +75,16 @@ class ViewController: UIViewController {
         
         if checkForVictory(CROSS) {
             
+            guard let nameX = recivingMessageX else {return}
             crossScore += 1
-            resultAlert(title: "X Win!")
+            resultAlert(title:"\(nameX) X Win!")
             
         }
         if checkForVictory(CIRCLE) {
             
+            guard let nameO = recivingMessageO else {return}
             circleScore += 1
-            resultAlert(title: "O Win!")
+            resultAlert(title:"\(nameO) Win!")
         }
         
         if fullBoard() {
@@ -134,8 +136,10 @@ class ViewController: UIViewController {
     
     // Handler
     func resultAlert(title: String) {
+        guard let titleX = recivingMessageX else {return}
+        guard let titleO = recivingMessageO else {return}
         
-        let message = "\n\(String(describing: recivingMessageO)) " + String(circleScore) + "\n\n\(String(describing: recivingMessageX)) " + String(crossScore)
+        let message = "\n\(titleO) " + String(circleScore) + "\n\n\(titleX) " + String(crossScore)
         let ac = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
         ac.addAction(UIAlertAction(title: "Reset", style: .default, handler: { (_) in self.resertBoard()}))
         self.present(ac,animated: true)
