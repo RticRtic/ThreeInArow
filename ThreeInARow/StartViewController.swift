@@ -14,16 +14,22 @@ class StartViewController: UIViewController {
     
     
     let segueStartGameId = "startGameIdentifier"
+    let segueStartGameAIId = "startGameAIIdentifier"
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        
        
     }
     
     @IBAction func startGameButton(_ sender: UIButton) {
         
-     performSegue(withIdentifier: segueStartGameId, sender: self)
+       performSegue(withIdentifier: segueStartGameId, sender: self)
+        
+        
+    
         
     }
     
@@ -33,10 +39,16 @@ class StartViewController: UIViewController {
             destinationVC.recivingMessageX = xEnterName.text
             destinationVC.recivingMessageO = oEnterName.text
             
+            
+            
         }
     }
     
-    
-    
+    @IBAction func startGameAgainsAIButton(_ sender: UIButton) {
+        
+        performSegue(withIdentifier: segueStartGameAIId, sender: self)
+        
+    }
+   
 
 }

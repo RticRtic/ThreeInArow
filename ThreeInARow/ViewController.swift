@@ -13,9 +13,10 @@ class ViewController: UIViewController {
     enum Turn {
         case Circle
         case Cross
+        case AI
     }
     
-
+    
     @IBOutlet weak var turnLabel: UILabel!
     @IBOutlet weak var turnName: UILabel!
     
@@ -30,17 +31,23 @@ class ViewController: UIViewController {
     @IBOutlet weak var c3: UIButton!
     
     
-    var firstTurn = Turn.Cross
-    var currentTurn = Turn.Cross
+    var firstTurn = Turn.AI
+    var currentTurn = Turn.AI
     
     var CIRCLE = "O"
     var CROSS = "X"
+    var AI = "O"
+    
     
     var crossScore = 0
     var circleScore = 0
+    var aIScore = 0
     
-    var recivingMessageX: String?
-    var recivingMessageO: String?
+    var recivingMessageX: String? = ""
+    var recivingMessageO: String? = ""
+    
+    
+    
     
     // Array of buttons
     var board = [UIButton]()
@@ -49,9 +56,11 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        turnName.text = recivingMessageX
+        
         initBoard()
         
-        turnName.text = recivingMessageX
+        
         
         
         
@@ -68,10 +77,13 @@ class ViewController: UIViewController {
         board.append(c1)
         board.append(c2)
         board.append(c3)
+        
     }
-
+    
     @IBAction func tapRecognizer(_ sender: UIButton) {
         addToBoard(sender)
+      
+        
         
         if checkForVictory(CROSS) {
             
@@ -88,41 +100,43 @@ class ViewController: UIViewController {
         }
         
         if fullBoard() {
-           resultAlert(title: "Draw")
+            resultAlert(title: "Draw")
         }
+        
+        
         
     }
     
-    func checkForVictory(_ s :String) -> Bool {
+    func checkForVictory(_ symbol :String) -> Bool {
         // Horizontal victory
-        if thisSymbol(a1,s) && thisSymbol(a2,s) && thisSymbol(a3,s) {
+        if thisSymbol(a1,symbol) && thisSymbol(a2,symbol) && thisSymbol(a3,symbol) {
             return true
         }
-        if thisSymbol(b1,s) && thisSymbol(b2,s) && thisSymbol(b3,s) {
+        if thisSymbol(b1,symbol) && thisSymbol(b2,symbol) && thisSymbol(b3,symbol) {
             return true
         }
-        if thisSymbol(c1,s) && thisSymbol(c2,s) && thisSymbol(c3,s) {
+        if thisSymbol(c1,symbol) && thisSymbol(c2,symbol) && thisSymbol(c3,symbol) {
             return true
         }
         
         // Vertical victory
-        if thisSymbol(a1,s) && thisSymbol(b1,s) && thisSymbol(c1,s) {
+        if thisSymbol(a1,symbol) && thisSymbol(b1,symbol) && thisSymbol(c1,symbol) {
             return true
         }
-        if thisSymbol(a2,s) && thisSymbol(b2,s) && thisSymbol(c2,s) {
+        if thisSymbol(a2,symbol) && thisSymbol(b2,symbol) && thisSymbol(c2,symbol) {
             return true
         }
-        if thisSymbol(a3,s) && thisSymbol(b3,s) && thisSymbol(c3,s) {
+        if thisSymbol(a3,symbol) && thisSymbol(b3,symbol) && thisSymbol(c3,symbol) {
             return true
         }
         // Diagonal victory
-        if thisSymbol(a1,s) && thisSymbol(b2,s) && thisSymbol(c3,s) {
+        if thisSymbol(a1,symbol) && thisSymbol(b2,symbol) && thisSymbol(c3,symbol) {
             return true
         }
-        if thisSymbol(a3,s) && thisSymbol(b2,s) && thisSymbol(c1,s) {
+        if thisSymbol(a3,symbol) && thisSymbol(b2,symbol) && thisSymbol(c1,symbol) {
             return true
         }
-       
+        
         return false
     }
     
@@ -182,8 +196,9 @@ class ViewController: UIViewController {
     
     
     // Puts data in sender
+    // title = if the button has O, X or Nil on it
     func addToBoard(_ sender: UIButton) {
-       
+        
         if sender.title(for: .normal) == nil {
             
             if currentTurn == Turn.Circle {
@@ -198,11 +213,50 @@ class ViewController: UIViewController {
                 turnLabel.text = CIRCLE
                 turnName.text = recivingMessageO
             }
-            // Remove animation when a button already has 0 or X in it
+            else if currentTurn == Turn.AI {
+                AIPLayer()
+                currentTurn = Turn.Cross
+                turnLabel.text = CROSS
+                
+                // TODO:::::: Lägg till AI 
+            }
+            // Remove animation when a button already has O or X in it
             sender.isEnabled = false
             
+        }
+        
     }
     
-}
+    func AIPLayer() {
+        
+        let buttons = [a1, a2, a3, b1, b2, b3, c1 ,c2 ,c3]
+        
+        
+        var randomInt = Int.random(in: 0...8)
+        
+        //Saves the randomNumber in a UIButton
+        var button = buttons[randomInt]
+        
+          
+        print("AI place: \(randomInt) ")
+        
+        while !isFree(button: button) {
+         
+            randomInt = Int.random(in: 0...8 )
+               
+            
+            button = buttons[randomInt]
 
+        }
+        
+        
+        button?.setTitle(CIRCLE, for: .normal)
+    }
+    
+    func isFree(button : UIButton?) -> Bool {
+        return button?.title(for: .normal) == nil
+    }
+    
+    
+    
 }
