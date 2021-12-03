@@ -13,9 +13,10 @@ class ViewController: UIViewController {
     enum Turn {
         case Circle
         case Cross
+        case AI
     }
     
-
+    
     @IBOutlet weak var turnLabel: UILabel!
     @IBOutlet weak var turnName: UILabel!
     
@@ -35,12 +36,20 @@ class ViewController: UIViewController {
     
     var CIRCLE = "O"
     var CROSS = "X"
+    var AI = "O"
+    
     
     var crossScore = 0
     var circleScore = 0
+    var aIScore = 0
     
-    var recivingMessageX: String?
-    var recivingMessageO: String?
+    var recivingMessageX: String? = ""
+    var recivingMessageO: String? = ""
+    
+    var recivingPlayerVSplayer: Bool? // false
+    var recivingPlayerVSAi: Bool? // true
+    
+    
     
     // Array of buttons
     var board = [UIButton]()
@@ -49,9 +58,10 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        turnName.text = recivingMessageX
+        
         initBoard()
         
-        turnName.text = recivingMessageX
         
         
         
@@ -68,61 +78,99 @@ class ViewController: UIViewController {
         board.append(c1)
         board.append(c2)
         board.append(c3)
-    }
-
-    @IBAction func tapRecognizer(_ sender: UIButton) {
-        addToBoard(sender)
-        
-        if checkForVictory(CROSS) {
-            
-            guard let nameX = recivingMessageX else {return}
-            crossScore += 1
-            resultAlert(title:"\(nameX) X Win!")
-            
-        }
-        if checkForVictory(CIRCLE) {
-            
-            guard let nameO = recivingMessageO else {return}
-            circleScore += 1
-            resultAlert(title:"\(nameO) Win!")
-        }
-        
-        if fullBoard() {
-           resultAlert(title: "Draw")
-        }
         
     }
     
-    func checkForVictory(_ s :String) -> Bool {
+    @IBAction func tapRecognizer(_ sender: UIButton) {
+        
+        addToBoard(sender)
+        
+        if recivingPlayerVSplayer == false {
+            
+            if checkForVictory(CROSS) {
+                
+                guard let nameX = recivingMessageX else {return}
+                crossScore += 1
+                resultAlert(title:"\(nameX) X Win!")
+                
+            }
+            
+        }
+        
+        if recivingPlayerVSplayer == false {
+            
+            if checkForVictory(CIRCLE) {
+                
+                guard let nameO = recivingMessageO else {return}
+                circleScore += 1
+                resultAlert(title:"\(nameO) Win!")
+            }
+        }
+        
+        if recivingPlayerVSplayer == false {
+            if fullBoard() {
+                resultAlert(title: "Draw")
+            }
+        }
+        
+        if recivingPlayerVSAi == true {
+            if checkForVictory(CROSS) {
+                guard let nameX = recivingMessageX else {return}
+                crossScore += 1
+                resultAlert(title:"\(nameX) X Win!")
+            }
+        }
+        if recivingPlayerVSAi == true {
+            if checkForVictory(CIRCLE) {
+                aIScore += 1
+                resultAlert(title: "AI Win!")
+            }
+        }
+        print("\(a1.title(for: .normal))")
+        print("\(b2.title(for: .normal))")
+        print("\(b3.title(for: .normal))")
+        print("\(b1.title(for: .normal))")
+        print("\(b2.title(for: .normal))")
+        print("\(b3.title(for: .normal))")
+        print("\(c1.title(for: .normal))")
+        print("\(c2.title(for: .normal))")
+        print("\(c3.title(for: .normal)) \n\n\n")
+        
+        
+        
+    }
+    
+    func checkForVictory(_ symbol :String) -> Bool {
         // Horizontal victory
-        if thisSymbol(a1,s) && thisSymbol(a2,s) && thisSymbol(a3,s) {
+        if thisSymbol(a1,symbol) && thisSymbol(a2,symbol) && thisSymbol(a3,symbol) {
+            
             return true
         }
-        if thisSymbol(b1,s) && thisSymbol(b2,s) && thisSymbol(b3,s) {
+        if thisSymbol(b1,symbol) && thisSymbol(b2,symbol) && thisSymbol(b3,symbol) {
             return true
         }
-        if thisSymbol(c1,s) && thisSymbol(c2,s) && thisSymbol(c3,s) {
+        if thisSymbol(c1,symbol) && thisSymbol(c2,symbol) && thisSymbol(c3,symbol) {
             return true
         }
         
         // Vertical victory
-        if thisSymbol(a1,s) && thisSymbol(b1,s) && thisSymbol(c1,s) {
+        if thisSymbol(a1,symbol) && thisSymbol(b1,symbol) && thisSymbol(c1,symbol) {
             return true
         }
-        if thisSymbol(a2,s) && thisSymbol(b2,s) && thisSymbol(c2,s) {
+        if thisSymbol(a2,symbol) && thisSymbol(b2,symbol) && thisSymbol(c2,symbol) {
             return true
         }
-        if thisSymbol(a3,s) && thisSymbol(b3,s) && thisSymbol(c3,s) {
+        if thisSymbol(a3,symbol) && thisSymbol(b3,symbol) && thisSymbol(c3,symbol) {
             return true
         }
         // Diagonal victory
-        if thisSymbol(a1,s) && thisSymbol(b2,s) && thisSymbol(c3,s) {
+        if thisSymbol(a1,symbol) && thisSymbol(b2,symbol) && thisSymbol(c3,symbol) {
             return true
         }
-        if thisSymbol(a3,s) && thisSymbol(b2,s) && thisSymbol(c1,s) {
+        if thisSymbol(a3,symbol) && thisSymbol(b2,symbol) && thisSymbol(c1,symbol) {
             return true
         }
-       
+        
         return false
     }
     
@@ -139,10 +187,18 @@ class ViewController: UIViewController {
         guard let titleX = recivingMessageX else {return}
         guard let titleO = recivingMessageO else {return}
         
-        let message = "\n\(titleO) " + String(circleScore) + "\n\n\(titleX) " + String(crossScore)
-        let ac = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
-        ac.addAction(UIAlertAction(title: "Reset", style: .default, handler: { (_) in self.resertBoard()}))
-        self.present(ac,animated: true)
+        if recivingPlayerVSplayer == false {
+            let message = "\n\(titleO) " + String(circleScore) + "\n\n\(titleX) " + String(crossScore)
+            let ac = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
+            ac.addAction(UIAlertAction(title: "Reset", style: .default, handler: { (_) in self.resertBoard()}))
+            self.present(ac,animated: true)
+        }
+        else if recivingPlayerVSAi == true {
+            let message = "\nAI " + String(aIScore) + "\n\nPlayer " + String(crossScore)
+            let ac = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
+            ac.addAction(UIAlertAction(title: "Reset", style: .default, handler: { (_) in self.resertBoard()}))
+            self.present(ac,animated: true)
+        }
         
     }
     
@@ -182,27 +238,105 @@ class ViewController: UIViewController {
     
     
     // Puts data in sender
+    // title = if the button has O, X or Nil on it
     func addToBoard(_ sender: UIButton) {
-       
+        
         if sender.title(for: .normal) == nil {
             
-            if currentTurn == Turn.Circle {
-                sender.setTitle(CIRCLE, for: .normal)
-                currentTurn = Turn.Cross
-                turnLabel.text = CROSS
-                turnName.text = recivingMessageX
+            if recivingPlayerVSplayer == false {
+                
+                if currentTurn == Turn.Cross {
+                    sender.setTitle(CROSS, for: .normal)
+                    currentTurn = Turn.Circle
+                    turnLabel.text = CIRCLE
+                    turnName.text = recivingMessageO
+                    
+                }
+                else if currentTurn == Turn.Circle {
+                    sender.setTitle(CIRCLE, for: .normal)
+                    currentTurn = Turn.Cross
+                    turnLabel.text = CROSS
+                    turnName.text = recivingMessageX
+                }
+                sender.isEnabled = false
+                
             }
-            else if currentTurn == Turn.Cross {
-                sender.setTitle(CROSS, for: .normal)
-                currentTurn = Turn.Circle
-                turnLabel.text = CIRCLE
-                turnName.text = recivingMessageO
-            }
-            // Remove animation when a button already has 0 or X in it
-            sender.isEnabled = false
             
+            
+        }
+        if recivingPlayerVSAi == true {
+            if sender.title(for: .normal) == nil {
+                print("Sender title is: \(sender.title(for: .normal))")
+                print("PlayerVS AI : \(recivingPlayerVSAi)")
+                currentTurn = Turn.Cross
+                print("Current turn: \(currentTurn)")
+                sender.setTitle(CROSS, for: .normal)
+                sender.isEnabled = false
+                
+                AIPLayer()
+                
+            }
+        }
+        
     }
+    
+    
+    
+    
+    
+    
+    func AIPLayer() {
+        
+        let buttons = [a1, a2, a3, b1, b2, b3, c1 ,c2 ,c3]
+        
+        
+        var randomInt = Int.random(in: 0...8)
+        
+        //Saves the randomNumber in a UIButton
+        var button = buttons[randomInt]
+        
+        
+        print("AI place: \(randomInt) ")
+        
+        
+        while !isFree(button: button) {
+            
+            randomInt = Int.random(in: 0...8 )
+           
+            button = buttons[randomInt]
+
+        }
+        
+        
+        button?.setTitle(CIRCLE, for: .normal)
+        button?.isEnabled = false
+       
+    }
+    
+    func isFree(button : UIButton?) -> Bool {
+   
+        return button?.title(for: .normal) == nil
+        
+        
+    }
+    
     
 }
 
-}
+
+
+
+
+/*
+ if currentTurn == Turn.Cross {
+ sender.setTitle(CROSS, for: .normal)
+ currentTurn = Turn.Circle
+ turnLabel.text = recivingMessageX
+ turnName.text = CIRCLE
+ }
+ else if currentTurn == Turn.Circle {
+ sender.setTitle(CIRCLE, for: .normal)
+ currentTurn = Turn.Cross
+ turnLabel.text = recivingMessageO
+ turnName.text = CROSS
+ */
