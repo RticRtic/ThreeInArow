@@ -38,6 +38,10 @@ class ViewController: UIViewController {
     var CROSS = "X"
     var AI = "O"
     
+    var firstTurnMVC = "CROSS"
+    var currenTurn = "CROSS"
+    var secondTurnMVC = "CIRCLE"
+    
     
     var crossScore = 0
     var circleScore = 0
@@ -50,6 +54,7 @@ class ViewController: UIViewController {
     var recivingPlayerVSAi: Bool? // true
     
     
+    let game = Game()
     
     // Array of buttons
     var board = [UIButton]()
@@ -68,6 +73,7 @@ class ViewController: UIViewController {
         
     }
     // Adds the buttons in the boards Array
+    
     func initBoard() {
         board.append(a1)
         board.append(a2)
@@ -80,12 +86,31 @@ class ViewController: UIViewController {
         board.append(c3)
         
     }
-    
+
     @IBAction func tapRecognizer(_ sender: UIButton) {
         
+        
+        
+        let pos = sender.tag
+        let allowed = game.addToBoard(position: pos, marker: CROSS)
+        
+        if allowed {
+            addToBoard(sender)
+        }
+        
+       let winner = game.checkForVictory()
+        if winner == CROSS {
+            
+        }
+            
+        
+       
+        
+       
+        /*
         addToBoard(sender)
         
-        if recivingPlayerVSplayer == false {
+        
             
             if checkForVictory(CROSS) {
                 
@@ -94,10 +119,6 @@ class ViewController: UIViewController {
                 resultAlert(title:"\(nameX) X Win!")
                 
             }
-            
-        }
-        
-        if recivingPlayerVSplayer == false {
             
             if checkForVictory(CIRCLE) {
                 
@@ -105,40 +126,31 @@ class ViewController: UIViewController {
                 circleScore += 1
                 resultAlert(title:"\(nameO) Win!")
             }
-        }
         
-        if recivingPlayerVSplayer == false {
+    
             if fullBoard() {
                 resultAlert(title: "Draw")
             }
-        }
         
-        if recivingPlayerVSAi == true {
+        
+      
             if checkForVictory(CROSS) {
                 guard let nameX = recivingMessageX else {return}
                 crossScore += 1
                 resultAlert(title:"\(nameX) X Win!")
             }
-        }
-        if recivingPlayerVSAi == true {
+        
+     
             if checkForVictory(CIRCLE) {
                 aIScore += 1
                 resultAlert(title: "AI Win!")
             }
-        }
-        print("\(a1.title(for: .normal))")
-        print("\(b2.title(for: .normal))")
-        print("\(b3.title(for: .normal))")
-        print("\(b1.title(for: .normal))")
-        print("\(b2.title(for: .normal))")
-        print("\(b3.title(for: .normal))")
-        print("\(c1.title(for: .normal))")
-        print("\(c2.title(for: .normal))")
-        print("\(c3.title(for: .normal)) \n\n\n")
         
-        
-        
+       
+       */
+       
     }
+    
     
     func checkForVictory(_ symbol :String) -> Bool {
         // Horizontal victory
@@ -241,8 +253,6 @@ class ViewController: UIViewController {
     // title = if the button has O, X or Nil on it
     func addToBoard(_ sender: UIButton) {
         
-        if sender.title(for: .normal) == nil {
-            
             if recivingPlayerVSplayer == false {
                 
                 if currentTurn == Turn.Cross {
@@ -260,12 +270,12 @@ class ViewController: UIViewController {
                 }
                 sender.isEnabled = false
                 
-            }
+            
             
             
         }
         if recivingPlayerVSAi == true {
-            if sender.title(for: .normal) == nil {
+           
                 print("Sender title is: \(sender.title(for: .normal))")
                 print("PlayerVS AI : \(recivingPlayerVSAi)")
                 currentTurn = Turn.Cross
@@ -275,7 +285,7 @@ class ViewController: UIViewController {
                 
                 AIPLayer()
                 
-            }
+            
         }
         
     }
