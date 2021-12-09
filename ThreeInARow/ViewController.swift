@@ -119,13 +119,14 @@ class ViewController: UIViewController {
             if allowed {
                 setPlayerTitle(sender)
                 
+                // Check if there is a winner
                 var winner = game.checkForVictory()
                 if winner == CROSS {
                     crossScore += 1
                     resultAlert(title: "Player with X Win!")
                     return
                 }
-                
+                // Check if draw
                 if game.fullBoard() {
                     resultAlert(title: "Draw!")
                     return
@@ -147,185 +148,109 @@ class ViewController: UIViewController {
     }
     
     
-
-
-
-
-func changeTurn() {
-    if currentTurn == CROSS {
-        currentTurn = CIRCLE
-        turnLabel.text = CIRCLE
-        turnName.text = recivingMessageO
-        
-    }
-    else if currentTurn == CIRCLE {
-        currentTurn = CROSS
-        turnLabel.text = CROSS
-        turnName.text = recivingMessageX
-    }
     
-}
-
-
-// Handler
-func resultAlert(title: String) {
-    guard let titleX = recivingMessageX else {return}
-    guard let titleO = recivingMessageO else {return}
     
-    if recivingPlayerVSplayer == false {
-        let message = "\n\(titleO) " + String(circleScore) + "\n\n\(titleX) " + String(crossScore)
-        let ac = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
-        ac.addAction(UIAlertAction(title: "Reset", style: .default, handler: { (_) in
-            print("reset...")
-            // Resets board
-            self.game.resetBoard()
-            self.refreshButtons()
+    
+    
+    func changeTurn() {
+        if currentTurn == CROSS {
+            currentTurn = CIRCLE
+            turnLabel.text = CIRCLE
+            turnName.text = recivingMessageO
             
-        }))
-        self.present(ac,animated: true)
+        }
+        else if currentTurn == CIRCLE {
+            currentTurn = CROSS
+            turnLabel.text = CROSS
+            turnName.text = recivingMessageX
+        }
+        
     }
-    else if recivingPlayerVSAi == true {
-        let message = "\nAI " + String(aIScore) + "\n\nPlayer " + String(crossScore)
-        let ac = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
-        ac.addAction(UIAlertAction(title: "Reset", style: .default, handler: { (_) in
-            // Resets board
-            self.game.resetBoard()
-            self.refreshButtons()
+    
+    
+    // Handler
+    func resultAlert(title: String) {
+        guard let titleX = recivingMessageX else {return}
+        guard let titleO = recivingMessageO else {return}
+        
+        if recivingPlayerVSplayer == false {
+            let message = "\n\(titleO) " + String(circleScore) + "\n\n\(titleX) " + String(crossScore)
+            let ac = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
+            ac.addAction(UIAlertAction(title: "Reset", style: .default, handler: { (_) in
+                print("reset...")
+                // Resets board
+                self.game.resetBoard()
+                self.refreshButtons()
+                
+            }))
+            self.present(ac,animated: true)
+        }
+        else if recivingPlayerVSAi == true {
+            let message = "\nAI " + String(aIScore) + "\n\nPlayer " + String(crossScore)
+            let ac = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
+            ac.addAction(UIAlertAction(title: "Reset", style: .default, handler: { (_) in
+                // Resets board
+                self.game.resetBoard()
+                self.refreshButtons()
+                
+            }))
+            self.present(ac,animated: true)
+        }
+        
+    }
+    
+    
+    func refreshButtons() {
+        print("buttons: \(board.count)")
+        for button in board {
+            button.setTitle("", for: .normal)
+            button.isEnabled = true
+        }
+        // player O starting
+        if firstTurn == CROSS {
+            firstTurn = CIRCLE
+        }
+        
+        
+    }
+    
+    func setAiTitle() {
+        let aiPosition = game.AIPLayer()
+        
+        
+        switch aiPosition {
             
-        }))
-        self.present(ac,animated: true)
-    }
-    
-}
-
-
-func refreshButtons() {
-    print("buttons: \(board.count)")
-    for button in board {
-        button.setTitle("", for: .normal)
-        button.isEnabled = true
-    }
-    // player O starting
-    if firstTurn == CROSS {
-        firstTurn = CIRCLE
-    }
-    
-    
-}
-
-func setAiTitle() {
-    let aiPosition = game.AIPLayer()
-    
-    
-    switch aiPosition {
+        case 0: a1.setTitle((CIRCLE), for: .normal)
+        case 1: a2.setTitle((CIRCLE), for: .normal)
+        case 2: a3.setTitle((CIRCLE), for: .normal)
+        case 3: b1.setTitle((CIRCLE), for: .normal)
+        case 4: b2.setTitle((CIRCLE), for: .normal)
+        case 5: b3.setTitle((CIRCLE), for: .normal)
+        case 6: c1.setTitle((CIRCLE), for: .normal)
+        case 7: c2.setTitle((CIRCLE), for: .normal)
+        case 8: c3.setTitle((CIRCLE), for: .normal)
+            
+            
+        default:
+            break
+        }
         
-    case 0: a1.setTitle((CIRCLE), for: .normal)
-    case 1: a2.setTitle((CIRCLE), for: .normal)
-    case 2: a3.setTitle((CIRCLE), for: .normal)
-    case 3: b1.setTitle((CIRCLE), for: .normal)
-    case 4: b2.setTitle((CIRCLE), for: .normal)
-    case 5: b3.setTitle((CIRCLE), for: .normal)
-    case 6: c1.setTitle((CIRCLE), for: .normal)
-    case 7: c2.setTitle((CIRCLE), for: .normal)
-    case 8: c3.setTitle((CIRCLE), for: .normal)
+    }
+    
+    
+    
+    // Sets the Playerbutton title to X or O
+    func setPlayerTitle(_ sender: UIButton) {
+        
+        print("add \(currentTurn)")
+        sender.setTitle(currentTurn, for: .normal)
         
         
-    default:
-        break
+        
+        
     }
     
-}
-
-
-
-// Sets the Playerbutton title to X or O
-func setPlayerTitle(_ sender: UIButton) {
-    
-    print("add \(currentTurn)")
-    sender.setTitle(currentTurn, for: .normal)
-    
-    
-    /*         if recivingPlayerVSplayer == false {
-     
-     if currentTurn == Turn.Cross {
-     sender.setTitle(CROSS, for: .normal)
-     currentTurn = Turn.Circle
-     turnLabel.text = CIRCLE
-     turnName.text = recivingMessageO
-     
-     }
-     else if currentTurn == Turn.Circle {
-     sender.setTitle(CIRCLE, for: .normal)
-     currentTurn = Turn.Cross
-     turnLabel.text = CROSS
-     turnName.text = recivingMessageX
-     }
-     sender.isEnabled = false
-     
-     
-     
-     
-     }
-     if recivingPlayerVSAi == true {
-     
-     print("Sender title is: \(sender.title(for: .normal))")
-     print("PlayerVS AI : \(recivingPlayerVSAi)")
-     currentTurn = Turn.Cross
-     print("Current turn: \(currentTurn)")
-     sender.setTitle(CROSS, for: .normal)
-     sender.isEnabled = false
-     
-     AIPLayer()
-     
-     
-     } */
     
 }
-
-
-
-
-
-/*
- func AIPLayer() {
- 
- let buttons = [a1, a2, a3, b1, b2, b3, c1 ,c2 ,c3]
- 
- 
- var randomInt = Int.random(in: 0...8)
- 
- //Saves the randomNumber in a UIButton
- var button = buttons[randomInt]
- 
- 
- print("AI place: \(randomInt) ")
- 
- 
- while !isFree(button: button) {
- 
- randomInt = Int.random(in: 0...8 )
- 
- button = buttons[randomInt]
- 
- }
- 
- 
- button?.setTitle(CIRCLE, for: .normal)
- button?.isEnabled = false
- 
- }
- 
- func isFree(button : UIButton?) -> Bool {
- 
- return button?.title(for: .normal) == nil
- 
- 
- }
- */
-
-}
-
-
-
 
 
