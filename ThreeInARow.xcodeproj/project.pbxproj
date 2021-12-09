@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		897DEC85275A4939004B2C9A /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897DEC84275A4939004B2C9A /* Game.swift */; };
 		8994D181274D13AF00E6373C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8994D180274D13AF00E6373C /* AppDelegate.swift */; };
 		8994D183274D13AF00E6373C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8994D182274D13AF00E6373C /* SceneDelegate.swift */; };
 		8994D185274D13AF00E6373C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8994D184274D13AF00E6373C /* ViewController.swift */; };
@@ -37,6 +38,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		897DEC84275A4939004B2C9A /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		8994D17D274D13AF00E6373C /* ThreeInARow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ThreeInARow.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8994D180274D13AF00E6373C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8994D182274D13AF00E6373C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -104,6 +106,7 @@
 				8994D180274D13AF00E6373C /* AppDelegate.swift */,
 				8994D182274D13AF00E6373C /* SceneDelegate.swift */,
 				8994D184274D13AF00E6373C /* ViewController.swift */,
+				897DEC84275A4939004B2C9A /* Game.swift */,
 				8994D186274D13AF00E6373C /* Main.storyboard */,
 				89AFF4B02755083D005B08FF /* StartViewController.swift */,
 				8994D189274D13AF00E6373C /* Assets.xcassets */,
@@ -261,6 +264,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				897DEC85275A4939004B2C9A /* Game.swift in Sources */,
 				8994D185274D13AF00E6373C /* ViewController.swift in Sources */,
 				89AFF4B12755083D005B08FF /* StartViewController.swift in Sources */,
 				8994D181274D13AF00E6373C /* AppDelegate.swift in Sources */,
