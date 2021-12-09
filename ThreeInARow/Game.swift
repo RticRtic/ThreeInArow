@@ -9,11 +9,7 @@ import UIKit
 
 class Game {
     
-    enum Turn {
-        case Cross
-        case Circle
-        case AI
-    }
+   
     
     private var board = ["_", "_", "_", "_", "_", "_", "_", "_", "_"]
     
@@ -21,19 +17,11 @@ class Game {
     var CIRCLE = "O"
     var EMPTY = "_"
     
-    var currentTurn = Turn.Cross
-    var firstTurn = Turn.Cross
-    
-    var recivingPlayerVSplayer: Bool? // false
-    var recivingPlayerVSAi: Bool? // true
-    
-    
+
     
     func addToBoard(position: Int, marker: String) -> Bool  {
         
-        let positionAsString = String(position)
-        
-        if positionAsString == EMPTY {
+        if board[position] == EMPTY {
             board[position] = marker
             return true
         }
@@ -86,24 +74,74 @@ class Game {
         
     }
     
-    // Checks if there an empty space on the board
+    
     func fullBoard() -> Bool {
-        for markers in board {
-            
-            if markers == CROSS && markers == CIRCLE {
-                return true
+        for marker in board {
+            if marker == EMPTY {
+                return false
             }
         }
-        return false
+        return true
     }
     
+    
+    
     func resetBoard() {
-        for marker in board {
-            if marker == EMPTY && marker == CROSS && marker == CIRCLE {
-                board.append(EMPTY)
-            }
-        }
+        
+    board = ["_", "_", "_", "_", "_", "_", "_", "_", "_"]
+        
+        
     }
+    
+    func AIPLayer() -> Int {
+        
+        let position = board
+        
+        
+        var randomInt = Int.random(in: 0...8)
+        
+        //Saves randomNumber in marker
+        var marker = position[randomInt]
+        
+        
+        print("AI Looking for empty place: \(randomInt) ")
+        
+        
+        while marker != EMPTY {
+            
+            randomInt = Int.random(in: 0...8 )
+            
+            marker = position[randomInt]
+            
+        }
+        if marker == EMPTY {
+            print("Took place: \(randomInt)")
+            board[randomInt] = CIRCLE
+            print(board)
+            
+         
+        }
+       return randomInt
+    }
+    
+    
+    
+    
+    
+
+    
+        
+    
+    
     
     
 }
+
+    
+    
+   
+    
+    
+
+
+
