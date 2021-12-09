@@ -78,6 +78,7 @@ class ViewController: UIViewController {
     
     @IBAction func tapRecognizer(_ sender: UIButton) {
         
+        // Player VS Player
         if recivingPlayerVSplayer == false {
             
             let pos = sender.tag
@@ -96,12 +97,12 @@ class ViewController: UIViewController {
             if winner == CROSS {
                 guard let nameX = recivingMessageX else {return}
                 crossScore += 1
-                resultAlert(title: "\(nameX) with X Win!")
+                resultAlert(title: "\(nameX) Win!")
             }
             else if winner == CIRCLE {
                 guard let nameO = recivingMessageO else {return}
                 circleScore += 1
-                resultAlert(title:"\(nameO) with O Win!")
+                resultAlert(title:"\(nameO) Win!")
             }
             if game.fullBoard() {
                 resultAlert(title: "Draw!")
@@ -110,7 +111,11 @@ class ViewController: UIViewController {
             
         }
         
+        // Player VS AI
         if recivingPlayerVSAi == true {
+            
+            turnName.text = "PLAYER VS AI"
+            
             let pos = sender.tag
             let allowed = game.addToBoard(position: pos, marker: currentTurn)
             
@@ -118,12 +123,12 @@ class ViewController: UIViewController {
             
             if allowed {
                 setPlayerTitle(sender)
-                
+                turnLabel.text = CIRCLE
                 // Check if there is a winner
                 var winner = game.checkForVictory()
                 if winner == CROSS {
                     crossScore += 1
-                    resultAlert(title: "Player with X Win!")
+                    resultAlert(title: "Player Win!")
                     return
                 }
                 // Check if draw
@@ -131,13 +136,19 @@ class ViewController: UIViewController {
                     resultAlert(title: "Draw!")
                     return
                 }
-                setAiTitle()
-                winner = game.checkForVictory()
-                if winner == CIRCLE {
-                    aIScore += 1
-                    resultAlert(title: "AI with O Win!")
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: { [self] in
+                    self.setAiTitle()
+                    self.turnLabel.text = CROSS
+                    winner = game.checkForVictory()
+                    if winner == CIRCLE {
+                        aIScore += 1
+                        resultAlert(title: "AI Win!")
+                        
+                    }
                     
-                }
+                })
+                
+                
             }
         }
         
@@ -213,7 +224,7 @@ class ViewController: UIViewController {
         
         
     }
-    
+    // AiPlayer and sets buttontitle
     func setAiTitle() {
         let aiPosition = game.AIPLayer()
         
