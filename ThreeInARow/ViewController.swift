@@ -45,7 +45,6 @@ class ViewController: UIViewController {
     var recivingPlayerVSAi: Bool? // true
     
     var disablePlayerButton = false
-    var activePlayer = true
     
     let game = Game()
     
