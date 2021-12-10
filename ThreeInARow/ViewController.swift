@@ -27,7 +27,7 @@ class ViewController: UIViewController {
     
     var CIRCLE = "O"
     var CROSS = "X"
-    var AI = "O"
+    
     
     var firstTurn = "X"
     var currentTurn = "X"
@@ -44,6 +44,8 @@ class ViewController: UIViewController {
     var recivingPlayerVSplayer: Bool? // false
     var recivingPlayerVSAi: Bool? // true
     
+    var disablePlayerButton = false
+    var activePlayer = true
     
     let game = Game()
     
@@ -86,10 +88,12 @@ class ViewController: UIViewController {
             
             print(" pos: \(pos) allowed: \(allowed)")
             if allowed {
+                
                 setPlayerTitle(sender)
+                changeTurn()
             }
             
-            changeTurn()
+            
             
             
             let winner = game.checkForVictory()
@@ -113,54 +117,54 @@ class ViewController: UIViewController {
         
         // Player VS AI
         if recivingPlayerVSAi == true {
-            
-            turnName.text = "PLAYER VS AI"
-            
-            let pos = sender.tag
-            let allowed = game.addToBoard(position: pos, marker: currentTurn)
-            
-            print("pos: \(pos) allowed: \(allowed)")
-            
-            if allowed {
-                setPlayerTitle(sender)
-                turnLabel.text = CIRCLE
-                // Check if there is a winner
-                var winner = game.checkForVictory()
-                if winner == CROSS {
-                    crossScore += 1
-                    resultAlert(title: "Player Win!")
-                    return
-                }
-                // Check if draw
-                if game.fullBoard() {
-                    resultAlert(title: "Draw!")
-                    return
-                }
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: { [self] in
-                    self.setAiTitle()
-                    self.turnLabel.text = CROSS
-                    winner = game.checkForVictory()
-                    if winner == CIRCLE {
-                        aIScore += 1
-                        resultAlert(title: "AI Win!")
-                        
+            if !disablePlayerButton {
+                turnName.text = "PLAYER VS AI"
+                
+                let pos = sender.tag
+                let allowed = game.addToBoard(position: pos, marker: currentTurn)
+                
+                print("pos: \(pos) allowed: \(allowed)")
+                
+                
+                if allowed {
+                    setPlayerTitle(sender)
+                    turnLabel.text = CIRCLE
+                    disablePlayerButton = true
+                    // Check if there is a winner
+                    var winner = game.checkForVictory()
+                    if winner == CROSS {
+                        crossScore += 1
+                        resultAlert(title: "Player Win!")
+                        return
                     }
+                    // Check if draw
+                    if game.fullBoard() {
+                        resultAlert(title: "Draw!")
+                        return
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: { [self] in
+                        self.setAiTitle()
+                        disablePlayerButton = false
+                        self.turnLabel.text = CROSS
+                        winner = game.checkForVictory()
+                        if winner == CIRCLE {
+                            aIScore += 1
+                            resultAlert(title: "AI Win!")
+                            
+                        }
+                        
+                    })
                     
-                })
-                
-                
+                    
+                    
+                }
             }
+            
         }
         
         
         
-        
-        
     }
-    
-    
-    
-    
     
     
     func changeTurn() {
@@ -216,6 +220,7 @@ class ViewController: UIViewController {
         for button in board {
             button.setTitle("", for: .normal)
             button.isEnabled = true
+            disablePlayerButton = false
         }
         // player O starting
         if firstTurn == CROSS {
@@ -241,7 +246,6 @@ class ViewController: UIViewController {
         case 7: c2.setTitle((CIRCLE), for: .normal)
         case 8: c3.setTitle((CIRCLE), for: .normal)
             
-            
         default:
             break
         }
@@ -255,6 +259,7 @@ class ViewController: UIViewController {
         
         print("add \(currentTurn)")
         sender.setTitle(currentTurn, for: .normal)
+        
         
         
         
